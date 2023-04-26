@@ -39,9 +39,9 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - Checkout
+      - checkout
       - restore_cache:
-        keys: [frontend-build]
+          keys: [frontend-build]
       - run: npm install
       - run: npm run test
       
@@ -50,9 +50,9 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - Checkout
+      - checkout
       - restore_cache:
-        keys: [backend-build]
+          keys: [backend-build]
       - run: npm install
       - run: npm run test
 
