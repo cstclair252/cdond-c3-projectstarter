@@ -7,14 +7,15 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      stack-name:
+      stack-name-destroy:
         type: string   
     steps:
       - run:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stackname "${stack-name}" --region us-east-1
+            aws cloudformation delete-stack --stackname "${stack-name}" --region us-east-1 / 
+            echo $stack-name-destroy
 
 
 jobs:
@@ -121,7 +122,7 @@ jobs:
       - run:
           name: Install tar and gzip
           command: |
-            sudo yum -y install tar gzip
+            sudo apt-get update && sudo apt-get install -y tar gzip
       
       - run:
           name: ensure back-end infrastructure exists
@@ -154,9 +155,9 @@ jobs:
       # Here's where you will add some code to rollback on failure 
 
       - destroy-environment:
-          stack-name: "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+          stack-name-destroy: "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy-environment:
-          stack-name: "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+          stack-name-destroy: "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
 
 
 
