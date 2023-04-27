@@ -1,5 +1,22 @@
 version: 2.1
 #testing this commit pull
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
+
+commands:
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      stack-name:
+        type: string   
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stackname "${stack-name}" --region us-east-1
+
+
 jobs:
   build-frontend:
     docker:
@@ -96,6 +113,49 @@ jobs:
               npm audit fix --force
               npm audit --audit-level=critical
 
+  deploy-infrastructure:
+    docker:
+      amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+#                  # --tags project=your-tag \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --region us-east-1 \
+              --parameter-overrides ID="Back${CIRCLE_WORKFLOW_ID:0:7}"
+
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+ #             #--tags project=your-tag \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --region us-east-1 \
+              --parameter-overrides ID="Front${CIRCLE_WORKFLOW_ID:0:7}"
+
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+#  This should get the public IP address of all instances and output to the inventory.txt file und [web]
+            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> project/.circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      # Here's where you will add some code to rollback on failure 
+
+      - when: on_fail
+        - destroy_environment:
+          stack-name: "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
+        - destroy_environment:
+          stack-name: "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+
+
 
 workflows:
   default:
@@ -110,3 +170,8 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [test-feature-branch]
