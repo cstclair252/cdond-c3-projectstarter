@@ -80,7 +80,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - Checkout
+      - checkout
       - restore_cache:
         keys: [backend-build]
       - run: npm run test
@@ -103,9 +103,9 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      # Docker image here that supports AWS CLI
+      amazon/aws-cli
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Ensure back-end infrastructure exists
           command: |
