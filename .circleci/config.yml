@@ -119,10 +119,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: Install tar and gzip
-          command: |
-            apt-get update && sudo apt-get install -y tar gzip
       
       - run:
           name: ensure back-end infrastructure exists
@@ -154,12 +150,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure 
 
-      - run:
-          name: did env fail
-          when: on_fail
-          command: |
-            destroy-environment --stack-name-destroy "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
-            destroy-environment --stack-name-destroy "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+
 
 
 
