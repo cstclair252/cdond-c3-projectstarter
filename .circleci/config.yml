@@ -149,9 +149,8 @@ jobs:
           root: ~/
           paths:
             -  cdond-c3-projectstarter/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure 
+      # Here's where you will add some code to rollback on failure
 
-    on_fail:
       - destroy-environment
 
 
