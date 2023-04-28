@@ -1,0 +1,39 @@
+# tasks file for setup role
+
+- name: Update apt packages
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Upgrade packages
+  become: yes
+  apt:
+    upgrade: yes
+
+- name: Install dependencies
+  become: yes
+  apt:
+    name:
+      - nodejs
+      - npm
+
+- name: Install pm2
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+
+- name: stop default with pm2
+  become: yes
+  command: pm2 stop default
+
+- name: Extract artifact and move backend directory
+  command: |
+    tar -xvf artifact.tar.gz -C backend/
+    mv backend ~/      
+
+- name: start web server
+  become: yes
+  command: pm2 start npm -- start
+    
+    
