@@ -209,13 +209,14 @@ jobs:
   
   deploy-frontend:
     docker:
-      - image: amazon/aws-cli
+      - image: python:latest
     steps:
       - checkout
       - run:
-          name: Install ansible
+          name: Install Ansible
           command: |
-            yum install -y ansible
+            apt-get update && apt-get install -y ansible
+            ansible --version
       
       - run:
           name: Install Python
@@ -225,8 +226,9 @@ jobs:
       - run: 
           name: Install Node and NPM
           command: |
-            curl -sL https://rpm.nodesource.com/setup_14.x | bash -
-            yum install -y nodejs
+            curl -sL https://deb.nodesource.com/setup_16.x | bash -
+            apt-get install -y nodejs
+            npm install -g npm
 
 
       - attach_workspace:
