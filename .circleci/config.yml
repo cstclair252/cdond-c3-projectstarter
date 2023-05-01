@@ -218,11 +218,6 @@ jobs:
             apt-get update && apt-get install -y ansible
             ansible --version
       
-      - run:
-          name: Install Python
-          command: |
-            yum install -y python3
-      
       - run: 
           name: Install Node and NPM
           command: |
