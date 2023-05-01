@@ -164,7 +164,7 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - add_ssh_keys:    
-          fingerprints: ["b6:ac:d1:4f:f5:d6:03:99:b4:07:47:42:b2:93:de:dc"] 
+          fingerprints: ["70:12:02:20:bc:b0:3d:19:6e:a0:0e:a3:b2:c7:0d:e1"] 
       - attach_workspace:
           at: ~/
       
@@ -264,13 +264,14 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - add_ssh_keys:    
-          fingerprints: ["b6:ac:d1:4f:f5:d6:03:99:b4:07:47:42:b2:93:de:dc"] 
+          fingerprints: ["70:12:02:20:bc:b0:3d:19:6e:a0:0e:a3:b2:c7:0d:e1"] 
       - attach_workspace:
           at: ~/
       - run:
           name: Install tar utility
           command: |
-            yum install -y tar gzip
+            apt-get update
+            apt-get install -y tar gzip
       
       - run:
           name: Install Ansible
