@@ -156,7 +156,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:latest
       # Docker image here that supports Ansible
     steps:
       - checkout
@@ -297,9 +297,9 @@ workflows:
   default:
     jobs:
     
-      - deploy-infrastructure
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+ #     - deploy-infrastructure
+      - configure-infrastructure
+#          requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
