@@ -156,7 +156,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: python:3.9.16
+      - image: python:3.7-alpine3.11
       # Docker image here that supports Ansible
     steps:
       - checkout
@@ -169,17 +169,11 @@ jobs:
           at: ~/
       
       - run:
-          name: Install tar utility
+          name: Install dependencies
           command: |
-            apt-get update -y
-            apt-get install -y tar gzip
-      
-      - run:
-          name: Install Ansible
-          command: |
-            apt-get update -y
-            apt install ansible -y
-            which ansible
+            apk add --update ansible
+
+    
       - run:
           name: Configure server
           command: |
