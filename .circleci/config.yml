@@ -280,6 +280,13 @@ jobs:
             apt install ansible -y
             which ansible
 
+      - run:
+          name: Install npm
+          command: |
+            apt-get update -y
+            apt-get install -y npm
+            npm --version
+
 
       - run:
           name: Deploy backend
