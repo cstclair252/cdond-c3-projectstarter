@@ -167,10 +167,12 @@ jobs:
           fingerprints: ["b6:ac:d1:4f:f5:d6:03:99:b4:07:47:42:b2:93:de:dc"] 
       - attach_workspace:
           at: ~/
+      
       - run:
           name: Install tar utility
           command: |
-            yum install -y tar gzip
+            apt-get update -y
+            apt-get install -y tar gzip
       
       - run:
           name: Install Ansible
