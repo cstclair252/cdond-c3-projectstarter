@@ -20,11 +20,3 @@
   npm:
     name: pm2
     global: yes
-
-#might not need this since we install python in the pre tasks?
-
-- name: Install Python
-  become: yes
-  apt:
-    name:
-      - python3
