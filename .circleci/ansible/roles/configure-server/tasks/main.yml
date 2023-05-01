@@ -1,0 +1,30 @@
+- name: Update apt packages
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Upgrade packages
+  become: yes
+  apt:
+    upgrade: yes
+
+- name: Install dependencies
+  become: yes
+  apt:
+    name:
+      - nodejs
+      - npm
+
+- name: Install pm2
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+
+#might not need this since we install python in the pre tasks?
+
+- name: Install Python
+  become: yes
+  apt:
+    name:
+      - python3

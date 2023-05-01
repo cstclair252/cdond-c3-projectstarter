@@ -154,6 +154,38 @@ jobs:
 
 #      - destroy-environment
 
+  configure-infrastructure:
+    docker:
+      - image: python:3.9.16
+      # Docker image here that supports Ansible
+    steps:
+      - checkout
+      # might have to install a aws cli dependencies??
+      # Add ssh keys with fingerprint
+      # attach workspace
+      - add_ssh_keys:    
+          fingerprints: ["b6:ac:d1:4f:f5:d6:03:99:b4:07:47:42:b2:93:de:dc"] 
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip
+      
+      - run:
+          name: Install Ansible
+          command: |
+            apt-get update -y
+            apt install ansible -y
+            which ansible
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+      # Here's where you will add some code to rollback on failure  
+  
+  
   run-migrations:
     docker:
       - image: node:lts-alpine
@@ -233,6 +265,10 @@ jobs:
       - checkout
       # Add ssh keys with fingerprint
       # attach workspace
+      - add_ssh_keys:    
+          fingerprints: ["b6:ac:d1:4f:f5:d6:03:99:b4:07:47:42:b2:93:de:dc"] 
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install tar utility
           command: |
