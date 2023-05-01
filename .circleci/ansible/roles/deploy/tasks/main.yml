@@ -17,20 +17,18 @@
       - nodejs
       - npm
 
-- name: Install pm2
-  become: yes
-  npm:
-    name: pm2
-    global: yes
-
-- name: stop default with pm2
-  become: yes
-  command: pm2 stop default
-
 - name: Extract artifact and move backend directory
   command: |
     tar -xvf artifact.tar.gz -C backend/
     mv backend ~/      
+
+- name: Install npm
+  become: yes
+  command: npm install
+
+- name: stop default with pm2
+  become: yes
+  command: pm2 stop default
 
 - name: start web server
   become: yes
