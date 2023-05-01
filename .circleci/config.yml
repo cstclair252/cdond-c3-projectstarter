@@ -169,17 +169,9 @@ jobs:
           at: ~/
       
       - run:
-          name: Install tar utility
-          command: |
-            apt-get update -y
-            apt-get install -y tar gzip
-      
-      - run:
           name: Install Ansible
-          command: |
-            apt-get update -y
-            apt install ansible -y
-            which ansible
+          command: apk add --update ansible
+
     
       - run:
           name: Configure server
