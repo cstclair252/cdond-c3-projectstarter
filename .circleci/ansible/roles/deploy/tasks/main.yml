@@ -43,7 +43,10 @@
 
 - name: Install npm
   become: yes
-  command: npm install
+  command: |
+    cd ~/web
+    npm install
+    npm run build
 
 - name: stop default with pm2
   become: yes
