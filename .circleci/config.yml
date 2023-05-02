@@ -165,6 +165,13 @@ jobs:
       # attach workspace
       - add_ssh_keys:    
           fingerprints: ["70:12:02:20:bc:b0:3d:19:6e:a0:0e:a3:b2:c7:0d:e1"] 
+# destroy this code after only for running this without deploy-infra
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            echo [web] > ~/project/.circleci/ansible/inventory.txt
+            aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> ~/project/.circleci/ansible/inventory.txt
+      
       - attach_workspace:
           at: ~/
       
