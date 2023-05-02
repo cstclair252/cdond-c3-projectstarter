@@ -39,7 +39,6 @@
   unarchive:
     src: ~/web/artifact.tar.gz
     dest: ~/web
-    remote_src: yes
     copy: no    
 
 - name: Install npm
