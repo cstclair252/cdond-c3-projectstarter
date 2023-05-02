@@ -225,10 +225,10 @@ jobs:
             apt-get install -y nodejs
             npm install -g npm
       
-      - run:
-          name: Install webpack
-          command: |
-            npm install -g webpack -y
+#      - run:
+#          name: Install webpack
+#          command: |
+#            npm install -g webpack -y
 
 
       - attach_workspace:
