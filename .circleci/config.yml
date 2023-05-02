@@ -224,6 +224,11 @@ jobs:
             curl -sL https://deb.nodesource.com/setup_16.x | bash -
             apt-get install -y nodejs
             npm install -g npm
+      
+      - run:
+          name: Install webpack
+          command: |
+            npm install -g webpack
 
 
       - attach_workspace:
@@ -233,8 +238,7 @@ jobs:
           command: |
             export BACKEND_IP=$(cat ~/project/.circleci/ansible/inventory.txt)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}" > ~/project/frontend/.env
-            cd ~/project/frontend
+            echo "${API_URL}"
             npm run build
     
       
@@ -301,9 +305,9 @@ workflows:
   default:
     jobs:
     
-#      - deploy-infrastructure
-      - configure-infrastructure
-#          requires: [deploy-infrastructure]
+      - deploy-infrastructure
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
