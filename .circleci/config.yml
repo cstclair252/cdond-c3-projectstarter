@@ -228,7 +228,7 @@ jobs:
       - run:
           name: Install webpack
           command: |
-            npm install -g webpack
+            npm install -g webpack -y
 
 
       - attach_workspace:
@@ -236,7 +236,8 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(cat ~/project/.circleci/ansible/inventory.txt | sed 's/^\s*\[web\]\s*//')
+            sed '1d' ~/project/.circleci/ansible/inventory.txt > ~/project/.circleci/ansible/iponly.txt
+            export BACKEND_IP=$(cat ~/project/.circleci/ansible/iponly.txt)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             cd ~/project/frontend
