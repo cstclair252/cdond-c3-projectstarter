@@ -223,7 +223,7 @@ jobs:
           command: |
             curl -sL https://deb.nodesource.com/setup_16.x | bash -
             apt-get install -y nodejs
-            npm install -g npm
+            npm install -g npm && npm install -g webpack
       
 #      - run:
 #          name: Install webpack
@@ -240,6 +240,8 @@ jobs:
             export BACKEND_IP=$(cat ~/project/.circleci/ansible/iponly.txt)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
+            cat ~/project/.circleci/ansible/inventory.txt
+            cat ~/project/.circleci/ansible/iponly.txt
             cd ~/project/frontend
             npm run build
     
