@@ -17,10 +17,30 @@
       - nodejs
       - npm
 
-- name: Extract artifact and move backend directory
-  command: |
-    tar -xvf artifact.tar.gz -C backend/
-    mv backend ~/      
+- name: Install pm2
+  become: true
+  npm:
+    name: pm2
+    global: yes
+  
+- name: Create directory for web
+  become: true
+  file:
+    path: ~/web
+    state: directory
+
+- name: copy archived files to local server
+  become: true
+  copy: 
+    src: ~/project/artifact.tar.gz
+    dest: ~/web
+
+- name: Unarchive files
+  unarchive:
+    src: ~/web/artifact.tar.gz
+    dest: ~/web
+    remote_src: yes
+    copy: no    
 
 - name: Install npm
   become: yes
@@ -32,6 +52,9 @@
 
 - name: start web server
   become: yes
-  command: pm2 start npm -- start
+  command: |
+    cd ~/web
+    pm2 start npm -- start
+
     
     
