@@ -29,15 +29,21 @@
     path: ~/web
     state: directory
 
+- name: Create directory for backend
+  become: true
+  file:
+    path: ~/web/backend
+    state: directory
+
 - name: copy archived files to local server
   become: true
   copy: 
     src: ~/project/artifact.tar.gz
-    dest: ~/web
+    dest: ~/web/backend
 
 - name: unarchive the files
   unarchive:
-    src: ~/web/artifact.tar.gz
+    src: ~/web/backend/artifact.tar.gz
     dest: ~/web
 
 - name: Install npm
