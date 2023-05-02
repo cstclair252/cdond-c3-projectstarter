@@ -26,30 +26,25 @@
 - name: Create directory for web
   become: true
   file:
-    path: ~/web
+    path: /home/ubuntu/backend
     state: directory
 
-- name: Create directory for backend
-  become: true
-  file:
-    path: ~/web/backend
-    state: directory
 
 - name: copy archived files to local server
   become: true
   copy: 
-    src: ~/project/artifact.tar.gz
-    dest: ~/web/backend
+    src: /root/project/artifact.tar.gz
+    dest: /home/ubuntu/backend
 
 - name: unarchive the files
   unarchive:
-    src: ~/web/backend/artifact.tar.gz
-    dest: ~/web
+    src: /home/ubuntu/backend/artifact.tar.gz
+    dest: /home/ubuntu/backend
 
 - name: Install npm
   become: yes
   command: |
-    cd ~/web
+    cd /home/ubuntu/backend
     npm install
     npm run build
 
@@ -60,7 +55,7 @@
 - name: start web server
   become: yes
   command: |
-    cd ~/web
+    cd /home/ubuntu/backend
     pm2 start npm -- start
 
     
