@@ -236,9 +236,10 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(cat ~/project/.circleci/ansible/inventory.txt | sed 's/\[web\]//g')
+            export BACKEND_IP=$(cat ~/project/.circleci/ansible/inventory.txt | sed 's/^\s*\[web\]\s*//')
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
+            cd ~/project/frontend
             npm run build
     
       
