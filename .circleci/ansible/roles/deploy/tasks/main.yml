@@ -36,10 +36,10 @@
     src: /root/project/artifact.tar.gz
     dest: /home/ubuntu/backend
 
-- name: unarchive the files
-  unarchive:
-    src: /root/project/artifact.tar.gz
-    dest: /home/ubuntu/backend
+- name: Extract artifact
+  command: "tar -xzf /home/ubuntu/backend/artifact.tar.gz -C /home/ubuntu/backend"
+  become: true
+
 
 - name: Install npm
   become: yes
