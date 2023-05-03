@@ -23,7 +23,7 @@
     name: pm2
     global: yes
   
-- name: Create directory for web
+- name: Create directory for backend
   become: true
   file:
     path: /home/ubuntu/backend
@@ -40,19 +40,16 @@
   command: "tar -xzf /home/ubuntu/backend/artifact.tar.gz -C /home/ubuntu/backend"
   become: true
 
-
-- name: Install npm
-  become: yes
-  command: |
-    cd /home/ubuntu/backend
-    npm install
-    npm run build
+- name: Install dependencies and build package
+  become: true
+  shell: |
+    cd /home/ubuntu/backend && npm install && npm run build
 
 - name: stop default with pm2
   become: yes
   command: pm2 stop default
 
-- name: start web server
+- name: start backend server
   become: yes
   command: |
     cd /home/ubuntu/backend
