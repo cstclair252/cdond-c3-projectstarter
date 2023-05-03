@@ -38,7 +38,7 @@
 
 - name: unarchive the files
   unarchive:
-    src: /home/ubuntu/backend/artifact.tar.gz
+    src: /root/project/artifact.tar.gz
     dest: /home/ubuntu/backend
 
 - name: Install npm
