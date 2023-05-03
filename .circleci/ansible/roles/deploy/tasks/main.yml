@@ -45,10 +45,6 @@
   shell: |
     cd /home/ubuntu/backend && npm install && npm run build
 
-- name: stop default with pm2
-  become: yes
-  command: pm2 stop default
-
 - name: start backend server
   become: yes
   command: |
