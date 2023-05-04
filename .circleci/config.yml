@@ -275,7 +275,7 @@ jobs:
   deploy-backend:
     docker:
       - image: python:3.9.16
-      # Docker image here that supports Ansiblee
+      # Docker image here that supports Ansible
     steps:
       - checkout
       # Add ssh keys with fingerprint
