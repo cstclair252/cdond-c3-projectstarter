@@ -353,10 +353,11 @@ jobs:
             then
               return 0
             else
-              return 0
+              return 1
             fi
-
-              echo "backend still not working"
+      
+      # - destroy-environment
+              
 
       - run:
           name: Frontend smoke test.
@@ -369,7 +370,7 @@ jobs:
             else
               return 1
             fi
-              echo "front end worked!"
+              
 
 workflows:
   default:
