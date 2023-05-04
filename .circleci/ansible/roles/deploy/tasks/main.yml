@@ -48,7 +48,12 @@
 - name: start backend server
   become: yes
   shell: |
-    cd /home/ubuntu/backend && pm2 start npm -- start
+    cd /home/ubuntu/backend && pm2 start npm -- start 
+
+- name: restart service
+  become: yes
+  shell: !
+    cd /home/ubuntu/backend && pm2 stop default && pm2 start npm -- start
   environment:
     ENVIRONMENT: production
     TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
