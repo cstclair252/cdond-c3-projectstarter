@@ -48,7 +48,7 @@
 - name: start backend server
   become: yes
   shell: |
-    cd /home/ubuntu/backend && pm2 start npm -- run "start:dev"
+    cd /home/ubuntu/backend && pm2 start npm -- run "start:prod"
 
     
     
