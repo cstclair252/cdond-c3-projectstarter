@@ -15,6 +15,25 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7} --region us-east-1
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} --region us-east-1
 
+# to be able to revert migrations
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.         
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            SUCCESS=$(curl -insecure https://kvdb.io/NPKrPPPMch8svbr5uhv6dX/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo $SUCCESS
+            
+            if 
+              (( $SUCCESS==1 )); 
+            then
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
+            fi
+
 jobs:
   build-frontend:
     docker:
@@ -250,6 +269,7 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-front${CIRCLE_WORKFLOW_ID:0:7} --recursive
 
+
     # - destroy environment 
 
   deploy-backend:
@@ -284,25 +304,25 @@ jobs:
             apt-get install -y npm
             npm --version  
 
-      - run:
-          name: Save all DB var to .env
-          command: |
-            ls
-            pwd
-            cd backend
-            echo ENVIRONMENT=production > ".env"
-            echo NODE_ENV=production >>  ".env"
-            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
-            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
-            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
-            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
-            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
-            cat .env
-            ls    
+#      - run:
+#          name: Save all DB var to .env
+#          command: |
+#            ls
+#            pwd
+#            cd backend
+#            echo ENVIRONMENT=production > ".env"
+#            echo NODE_ENV=production >>  ".env"
+#            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+#            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
+#            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+#            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
+#            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
+#            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
+#            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+#            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+#            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+#            cat .env
+#            ls    
 
 
       - run:
@@ -327,6 +347,10 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      
+      - attach_workspace:
+          at: ~/
+      
       - run:
           name: Install dependencies
           command: |
@@ -339,13 +363,11 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
-      
-      - attach_workspace:
-          at: ~/
 
       - run:
           name: Backend smoke test.
           command: |
+            sleep 30
             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
@@ -356,15 +378,11 @@ jobs:
             else
               exit 1
             fi
-      
-      # - destroy-environment
-              
 
       - run:
           name: Frontend smoke test.
           command: |
-            export BUCKET=${CIRCLE_WORKFLOW_ID:0:7}
-            URL="http://udapeople-front${BUCKET}.s3.amazonaws.com/index.html"         
+            export URL="http://udapeople-front${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com/index.html"         
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
@@ -372,6 +390,9 @@ jobs:
             else
               exit 1
             fi
+      
+      #- destroy-environment
+      #- revert-migrations
               
 
 workflows:
