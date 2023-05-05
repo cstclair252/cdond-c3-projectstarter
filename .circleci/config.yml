@@ -214,11 +214,17 @@ jobs:
           at: ~/
       - restore_cache:
           keys: [backend-build]
+      
+      -run: 
+        name: npm install
+        command: |
+          cd ~/project/backend 
+          npm install
+      
       - run:
           name: Run migrations
           command: |
-            cd backend
-            npm install
+            cd ~/project/backend
             npm run migrations > ~/project/backend/migrations_dump.txt
             cat ~/project/backend/migrations_dump.txt
       
