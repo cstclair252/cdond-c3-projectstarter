@@ -364,17 +364,7 @@ jobs:
             unzip awscliv2.zip
             sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
 
-      - run:
-          name: Frontend smoke test.
-          command: |
-            export URL="http://udapeople-front${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com/index.html"         
-            echo ${URL} 
-            if curl -s ${URL} | grep "Welcome"
-            then
-              exit 0
-            else
-              exit 1
-            fi
+      
       
       
       - run:
@@ -392,9 +382,21 @@ jobs:
               exit 1
             fi
 
+      - run:
+          name: Frontend smoke test.
+          command: |
+            export URL="http://udapeople-front${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com/index.html"         
+            echo ${URL} 
+            if curl -s ${URL} | grep "Welcome"
+            then
+              exit 1
+            else
+              exit 1
+            fi
+
       
-      #- destroy-environment
-      #- revert-migrations
+      - destroy-environment
+      - revert-migrations
               
 
 workflows:
