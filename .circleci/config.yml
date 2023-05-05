@@ -365,21 +365,6 @@ jobs:
             sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
 
       - run:
-          name: Backend smoke test.
-          command: |
-            sleep 30
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            if 
-              curl -s "${API_URL}/api/status" | grep "ok"
-            then
-              exit 0
-            else
-              exit 1
-            fi
-
-      - run:
           name: Frontend smoke test.
           command: |
             export URL="http://udapeople-front${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com/index.html"         
@@ -390,6 +375,23 @@ jobs:
             else
               exit 1
             fi
+      
+      
+      - run:
+          name: Backend smoke test.
+          command: |
+            sleep 30
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}/api/status"
+            if 
+              curl -s "${API_URL}/api/status" | grep "ok"
+            then
+              exit 0
+            else
+              exit 1
+            fi
+
       
       #- destroy-environment
       #- revert-migrations
