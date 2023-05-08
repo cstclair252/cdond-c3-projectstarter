@@ -170,14 +170,13 @@ jobs:
           root: ~/
           paths:
             -  project/.circleci/ansible/inventory.txt 
-      # Here's where you will add some code to rollback on failure
 
-#      - destroy-environment
+
+      - destroy-environment
 
   configure-infrastructure:
     docker:
       - image: python:latest
-      # Docker image here that supports Ansible
     steps:
       - checkout
       # might have to install a aws cli dependencies??
@@ -202,7 +201,8 @@ jobs:
             cd ~/project/.circleci/ansible
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt configure-server.yml
-      # Here's where you will add some code to rollback on failure  x
+      
+      - destroy-environment
   
   
   run-migrations:
@@ -239,8 +239,8 @@ jobs:
                 echo "migrations failed"
               fi
 
-      #- destroy-environment
-  
+      - destroy-environment
+      - revert-migrations
   
   deploy-frontend:
     docker:
@@ -284,8 +284,8 @@ jobs:
             aws s3 cp dist s3://udapeople-front${CIRCLE_WORKFLOW_ID:0:7} --recursive
 
 
-    # - destroy environment 
-
+      - destroy environment
+      - revert-migrations
   deploy-backend:
     docker:
       - image: python:3.9.16
@@ -352,7 +352,8 @@ jobs:
               cat inventory.txt
               ansible-playbook -i inventory.txt deploy-backend.yml
     
-    # - destroy-environment
+      - destroy environment
+      - revert-migrations
 
 
 
@@ -444,7 +445,8 @@ jobs:
                 --tags project=udapeople
             echo $WorkflowID  
       
-      #- destroy environment        
+      - destroy environment
+      - revert-migrations
 
   cleanup:
     docker:
@@ -477,7 +479,7 @@ jobs:
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               echo "-------------------Delete Confirmed-----------------"
-              aws s3 rm "s3://udapeople-${OldWorkflowId}" --recursive
+              aws s3 rm "s3://udapeople-front${OldWorkflowId}" --recursive
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowId}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowId}"
             else 
