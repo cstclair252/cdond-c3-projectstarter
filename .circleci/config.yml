@@ -380,21 +380,27 @@ jobs:
             unzip awscliv2.zip
             sudo ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
 
-      
-      
+# export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+#export BACK-IP=$(tail -n +3 cat ~/project/.circleci/ansible/inventory.txt)
+            #cat ~/project/.circleci/ansible/inventory.txt
+            #echo "inventory text IP: ${BACK-IP}"    
       
       - run:
           name: Backend smoke test.
           command: |
             sleep 30
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query "Reservations[*].Instances[*].PublicIpAddress" \
+            --output text)
+            
+           
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}/api/status"
-            export BACK-IP=$(tail -n +3 cat ~/project/.circleci/ansible/inventory.txt)
-            cat ~/project/.circleci/ansible/inventory.txt
-            echo "inventory text IP: ${BACK-IP}"
+            
             if 
-              curl -s "${BACK-IP}/api/status" | grep "ok"
+              curl -s "${API_URL}/api/status" | grep "ok"
             then
               exit 0
             else
