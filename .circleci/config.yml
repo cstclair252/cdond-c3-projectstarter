@@ -489,7 +489,7 @@ jobs:
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldID}" ]]
             then
               echo "-------------------Delete Confirmed-----------------"
-              aws s3 rb "s3://udapeople-front${OldID}" --force --region us-east-1
+              aws s3 rb "s3://udapeople-front04ada38" --force --region us-east-1
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldID}"
               
