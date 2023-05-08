@@ -467,7 +467,7 @@ jobs:
             export STACKS=$(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[].StackName" --output text)
             export TEXTFILE=$(cat ~/textfile.txt)
             echo "stack names:" 
-            echo stack names: "${STACKS[@]}"
+            echo stack names: ${STACKS[@]}
             echo "workflow ID: ${OldWorkflowID}"
             echo "textfile: $TEXTFILE"
       
