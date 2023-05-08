@@ -467,7 +467,7 @@ jobs:
             export STACKS=$(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[].StackName" --output text)
             export TEXTFILE=$(cat ~/textfile.txt)
             echo "stack names:" 
-            echo "${STACKS[@]}"
+            echo stack names: "${STACKS[@]}"
             echo "workflow ID: ${OldWorkflowID}"
             echo "textfile: $TEXTFILE"
       
@@ -486,20 +486,20 @@ workflows:
     jobs:
 
 
-      - deploy-infrastructure
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+#      - deploy-infrastructure
+#      - configure-infrastructure:
+#          requires: [deploy-infrastructure]
+#      - run-migrations:
+#          requires: [configure-infrastructure]
+#      - deploy-frontend:
+#          requires: [run-migrations]
+#      - deploy-backend:
+#          requires: [run-migrations]
+#      - smoke-test:
+#          requires: [deploy-backend, deploy-frontend]
+#      - cloudfront-update:
+#          requires: [smoke-test]
+      - cleanup
+#          requires: [cloudfront-update]
  #         requires: [test-frontend, test-backend, scan-frontend, scan-backend]
 
