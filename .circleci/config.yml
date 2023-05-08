@@ -446,6 +446,41 @@ jobs:
       
       #- destroy environment        
 
+  cleanup:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y tar gzip
+      
+      - attach_workspace:
+          at: ~/
+# you could put your own code in here if needed for brining in the textfile. 
+
+      - run:
+          name: Get old stack workflow id
+          command: |
+            export OldWorkflowID=Exports[?Name==\`WorkflowID\`].Value" --no-paginate --output text
+            export STACKS=$(aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE --query "StackSummaries[].StackName" --output text)
+            export TEXTFILE=$(cat ~/textfile.txt)
+            echo "stack names:" 
+            echo "${STACKS[@]}"
+            echo "workflow ID: ${OldWorkflowID}"
+            echo "textfile: $TEXTFILE"
+      
+      - run:
+          name: Remove old stacks and files
+          command: |
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            then
+              echo "cleaning up old environment"
+            else 
+              echo "no cleanup required"
+            fi
+
 workflows:
   default:
     jobs:
@@ -464,5 +499,7 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
  #         requires: [test-frontend, test-backend, scan-frontend, scan-backend]
 
