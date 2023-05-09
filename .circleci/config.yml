@@ -490,8 +490,9 @@ jobs:
             
             export OldIDT=$"3d848fe"
             echo "Old Id: ${OldIDT}"
+            echo "IDP: ${OldIDP}"
             
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${CIRCLE_WORKFLOW_ID:0:7}" ]]
             then
               echo "-------------------Delete Confirmed-----------------"
               aws s3 rm s3://udapeople-front$OldIDP --recursive
