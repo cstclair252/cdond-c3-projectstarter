@@ -481,10 +481,17 @@ jobs:
             echo "workflow ID: ${OldWorkflowID}"
             echo "textfile: $TEXTFILE"
             echo "OldID: ${OldID}"
-            export OBUCKET=$
-            OBUCKET=$(echo "s3://udapeople-front${OldID}")
+            export OBUCKET=$(echo "s3://udapeople-front${OldID}")
             echo $OBUCKET
             echo "s3://udapeople-front${OldID}"
+      
+      - run:
+        name: test to remove bucket
+        command: |
+          export TEXTFILE2=$(cat ~/textfile.txt)
+          export OldID2=${TEXTFILE: -7}
+          aws s3 rm s3://udapeople-front${OldID2} --recursive
+          echo "old 2: ${OldID2}"
       
       - run:
           name: Remove old stacks and files
