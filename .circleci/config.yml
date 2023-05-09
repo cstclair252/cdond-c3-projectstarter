@@ -486,7 +486,7 @@ jobs:
           name: Remove old stacks and files
           command: |
             export OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name==\`WorkflowID\`].Value" --no-paginate --output text)
-            export OldIDP=$"OldWorkflowID: -7"
+            export OldIDP=$"{OldWorkflowID: -7}"
             
             export OldIDT=$"3d848fe"
             echo "Old Id: ${OldIDT}"
