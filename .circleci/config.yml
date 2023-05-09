@@ -149,7 +149,7 @@ jobs:
           root: ansible
           paths:
             -  inventory.txt
-      # Here's where you will add some code to rollback on failure
+      # Here's where you will add some code to rollback on failure x
 
       - destroy-environment
 
