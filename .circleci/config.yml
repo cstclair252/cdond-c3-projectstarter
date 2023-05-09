@@ -481,7 +481,7 @@ jobs:
             echo "textfile: $TEXTFILE"
             echo "OldID: ${OldID}"
             
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${CIRCLE_WORKFLOW_ID:0:7}" ]]
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${TEXTFILE}" ]]
             then
               echo "-------------------Delete Confirmed-----------------"
               aws s3 rm s3://udapeople-front$OldID --recursive
